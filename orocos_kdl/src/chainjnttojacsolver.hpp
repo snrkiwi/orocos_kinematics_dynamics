@@ -44,7 +44,7 @@ namespace KDL
         static const int E_JAC_FAILED = -100; //! Jac solver failed
 
         explicit ChainJntToJacSolver(const Chain& chain);
-        ~ChainJntToJacSolver();
+        virtual ~ChainJntToJacSolver();
         /**
          * Calculate the jacobian expressed in the base frame of the
          * chain, with reference point at the end effector of the
@@ -68,7 +68,7 @@ namespace KDL
         Twist t_tmp;
         Frame T_tmp;
         std::vector<bool> locked_joints_;
-        int nr_of_unlocked_joints_;
+        unsigned int nr_of_unlocked_joints_;
     };
 }
 #endif
