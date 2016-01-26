@@ -63,5 +63,48 @@ namespace KDL
             return 0;
         }
     }
-}
 
+    int ChainFkSolverVel_recursive::JntToCart(const JntArrayVel& in,std::vector<FrameVel>& out,int seg_nr)
+    {
+        unsigned int segmentNr;
+        if(seg_nr<0)
+            segmentNr=chain.getNrOfSegments();
+        else
+            segmentNr = seg_nr;
+
+
+
+        if(!(in.q.rows()==chain.getNrOfJoints()&&in.qdot.rows()==chain.getNrOfJoints()))
+            return -1;
+        else if(segmentNr>chain.getNrOfSegments())
+            return -1;
+        else if(out.size()!=segmentNr)
+            return -1;
+        else if(segmentNr == 0)
+            return -1;
+        else{
+            int j=0;
+            // Initialization
+            if(chain.getSegment(0).getJoint().getType()!=Joint::None){
+                out[0] = FrameVel(chain.getSegment(0).pose(in.q(0)),
+                                     chain.getSegment(0).twist(in.q(0),in.qdot(0)));
+                j++;
+            }else
+                out[0] = FrameVel(chain.getSegment(0).pose(0.0),
+                                     chain.getSegment(0).twist(0.0,0.0));
+            
+            for (unsigned int i=1;i<segmentNr;i++) {
+                //Calculate new Frame_base_ee
+                if(chain.getSegment(i).getJoint().getType()!=Joint::None){
+                    out[i]=out[i-1]*FrameVel(chain.getSegment(i).pose(in.q(j)),
+                                    chain.getSegment(i).twist(in.q(j),in.qdot(j)));
+                    j++;//Only increase jointnr if the segment has a joint
+                }else{
+                    out[i]=out[i-1]*FrameVel(chain.getSegment(i).pose(0.0),
+                                     chain.getSegment(i).twist(0.0,0.0));
+                }
+            }
+            return 0;
+        }
+    }
+}
