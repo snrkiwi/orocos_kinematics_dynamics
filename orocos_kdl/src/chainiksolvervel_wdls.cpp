@@ -53,20 +53,24 @@ namespace KDL
     
     void ChainIkSolverVel_wdls::updateInternalDataStructures() {
         jnt2jac.updateInternalDataStructures();
-        nj = chain.getNrOfJoints();
-        jac.resize(nj);
-        MatrixXd z6nj = MatrixXd::Zero(6,nj);
-        VectorXd znj = VectorXd::Zero(nj);
-        MatrixXd znjnj = MatrixXd::Zero(nj,nj);
-        U.conservativeResizeLike(z6nj);
-        S.conservativeResizeLike(znj);
-        V.conservativeResizeLike(znjnj);
-        tmp.conservativeResizeLike(znj);
-        tmp_jac.conservativeResizeLike(z6nj);
-        tmp_jac_weight1.conservativeResizeLike(z6nj);
-        tmp_jac_weight2.conservativeResizeLike(z6nj);
-        tmp_js.conservativeResizeLike(znjnj);
-        weight_js.conservativeResizeLike(MatrixXd::Identity(nj,nj));
+        // only update it there was a change in size
+        if (chain.getNrOfJoints() != nj)
+        {
+            nj = chain.getNrOfJoints();
+            jac.resize(nj);
+            MatrixXd z6nj = MatrixXd::Zero(6,nj);
+            VectorXd znj = VectorXd::Zero(nj);
+            MatrixXd znjnj = MatrixXd::Zero(nj,nj);
+            U.conservativeResizeLike(z6nj);
+            S.conservativeResizeLike(znj);
+            V.conservativeResizeLike(znjnj);
+            tmp.conservativeResizeLike(znj);
+            tmp_jac.conservativeResizeLike(z6nj);
+            tmp_jac_weight1.conservativeResizeLike(z6nj);
+            tmp_jac_weight2.conservativeResizeLike(z6nj);
+            tmp_js.conservativeResizeLike(znjnj);
+            weight_js.conservativeResizeLike(MatrixXd::Identity(nj,nj));
+        }
     }
 
     ChainIkSolverVel_wdls::~ChainIkSolverVel_wdls()

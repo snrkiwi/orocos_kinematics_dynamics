@@ -29,7 +29,10 @@ namespace KDL
     }
 
     void ChainJntToJacSolver::updateInternalDataStructures() {
-        locked_joints_.resize(chain.getNrOfJoints(),false);
+        // only update it there was a change in size
+        if (locked_joints_.size() != chain.getNrOfJoints()) {
+            locked_joints_.resize(chain.getNrOfJoints(),false);
+        }
     }
     ChainJntToJacSolver::~ChainJntToJacSolver()
     {

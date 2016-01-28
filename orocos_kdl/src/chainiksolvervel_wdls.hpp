@@ -207,7 +207,12 @@ namespace KDL
         /// @copydoc KDL::SolverI::strError()
         virtual const char* strError(const int error) const;
 
-        /// @copydoc KDL::SolverI::updateInternalDataStructures()
+        /** @copydoc KDL::SolverI::updateInternalDataStructures()
+            \post if the number of joints in the chain has changed then the
+            following are resized accordingly, otherwise nothing occurs:
+            - nj, jac, U, S, V, tmp, tmp_jac, tmp_jac_weight1, tmp_jac_weight2,
+            tmp_js, weight_js
+         */
         virtual void updateInternalDataStructures();
 
     private:

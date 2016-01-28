@@ -65,6 +65,8 @@ namespace KDL
         int setLockedJoints(const std::vector<bool> locked_joints);
 
         /// @copydoc KDL::SolverI::updateInternalDataStructures
+        /// \post \a locked_joints_ will be resized iff the number of joints
+        /// in the chain has changed, otherwise nothing occurs.
         virtual void updateInternalDataStructures();
 
     private:
