@@ -83,10 +83,16 @@ namespace KDL {
         /**
          * Get the rotational inertia expressed in the reference frame (not the cog)
          */
-        RotationalInertia getRotationalInertia() const{
+        RotationalInertia getRotationalInertia() {
             return I;
         };
 
+        /**
+         * Get the rotational inertia expressed in the reference frame (not the cog)
+         */
+        const RotationalInertia& getRotationalInertia() const{
+            return I;
+        };
     private:
         RigidBodyInertia(double m,const Vector& h,const RotationalInertia& I,bool mhi);
         double m;

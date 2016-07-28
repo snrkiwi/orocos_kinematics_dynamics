@@ -37,7 +37,7 @@ namespace KDL
  * to the chain's end-effector (task space/cartesian space).
  */
 
-class ChainIdSolver_Vereshchagin
+class ChainIdSolver_Vereshchagin : KDL::SolverI
 {
     typedef std::vector<Twist> Twists;
     typedef std::vector<Frame> Frames;
@@ -68,9 +68,13 @@ public:
      * Output parameters:
      * \param q_dotdot The joint accelerations
      * \param torques the resulting constraint torques for the joints
+     *
+     * @return error/success code
      */
     int CartToJnt(const JntArray &q, const JntArray &q_dot, JntArray &q_dotdot, const Jacobian& alfa, const JntArray& beta, const Wrenches& f_ext, JntArray &torques);
 
+    /// @copydoc KDL::SolverI::updateInternalDataStructures
+    virtual void updateInternalDataStructures();
     /*
     //Returns cartesian positions of links in base coordinates
     void getLinkCartesianPose(Frames& x_base);
@@ -118,7 +122,7 @@ private:
     void final_upwards_sweep(JntArray &q_dotdot, JntArray &torques);
 
 private:
-    Chain chain;
+    const Chain& chain;
     unsigned int nj;
     unsigned int ns;
     unsigned int nc;
