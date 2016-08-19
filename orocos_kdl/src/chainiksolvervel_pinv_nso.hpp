@@ -24,7 +24,7 @@
 
 #include "chainiksolver.hpp"
 #include "chainjnttojacsolver.hpp"
-#include "utilities/svd_HH.hpp"
+#include <Eigen/Core>
 
 namespace KDL
 {
@@ -60,7 +60,7 @@ namespace KDL
          * @param alpha the null-space velocity gain
          *
          */
-        ChainIkSolverVel_pinv_nso(const Chain& chain, JntArray opt_pos, JntArray weights, double eps=0.00001,int maxiter=150, double alpha = 0.25);
+        ChainIkSolverVel_pinv_nso(const Chain& chain, const JntArray& opt_pos, const JntArray& weights, double eps=0.00001,int maxiter=150, double alpha = 0.25);
         explicit ChainIkSolverVel_pinv_nso(const Chain& chain, double eps=0.00001,int maxiter=150, double alpha = 0.25);
         ~ChainIkSolverVel_pinv_nso();
 
@@ -71,48 +71,56 @@ namespace KDL
          */
         virtual int CartToJnt(const JntArray& q_init, const FrameVel& v_in, JntArrayVel& q_out){return -1;};
 
+        /**
+         *Set joint weights for optimization criterion
+         *
+         *@param weights the joint weights
+         *
+         */
+        virtual int setWeights(const JntArray &weights);
 
-	/**
-	 *Set joint weights for optimization criterion
-	 *
-	 *@param weights the joint weights
-	 *
-	 */
-	virtual int setWeights(const JntArray &weights);
+        /**
+         *Set optimal joint positions
+         *
+         *@param opt_pos optimal joint positions
+         *
+         */
+        virtual int setOptPos(const JntArray &opt_pos);
 
-	/**
-	 *Set optimal joint positions
-	 *
-	 *@param opt_pos optimal joint positions
-	 *
-	 */
-	virtual int setOptPos(const JntArray &opt_pos);
+        /**
+         *Set null psace velocity gain
+         *
+         *@param alpha NUllspace velocity cgain
+         *
+         */
+        virtual int setAlpha(const double alpha);
 
-	/**
-	 *Set null psace velocity gain
-	 *
-	 *@param alpha NUllspace velocity cgain
-	 *
-	 */
-	virtual int setAlpha(const double alpha);
+        /**
+         * Retrieve the latest return code from the SVD algorithm
+         * @return 0 if CartToJnt() not yet called, otherwise latest SVD result code.
+         */
+        int getSVDResult()const {return svdResult;};
+
+        /// @copydoc KDL::SolverI::updateInternalDataStructures
+        virtual void updateInternalDataStructures();
 
     private:
-        const Chain chain;
+        const Chain& chain;
         ChainJntToJacSolver jnt2jac;
+        unsigned int nj;
         Jacobian jac;
-        SVD_HH svd;
-        std::vector<JntArray> U;
-        JntArray S;
-        std::vector<JntArray> V;
-        JntArray tmp;
-        JntArray tmp2;
+        Eigen::MatrixXd U;
+        Eigen::VectorXd S;
+        Eigen::VectorXd Sinv;
+        Eigen::MatrixXd V;
+        Eigen::VectorXd tmp;
+        Eigen::VectorXd tmp2;
         double eps;
         int maxiter;
-
-	double alpha;
-	JntArray weights;
-	JntArray opt_pos;
-	
+        int svdResult;
+        double alpha;
+        JntArray weights;
+        JntArray opt_pos;
     };
 }
 #endif
