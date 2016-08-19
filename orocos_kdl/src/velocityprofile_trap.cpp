@@ -190,6 +190,41 @@ void VelocityProfile_Trap::Write(std::ostream& os) const {
 	os << "TRAPEZOIDAL[" << maxvel << "," << maxacc <<"]";
 }
 
+void VelocityProfile_Trap::GetInternals(double& _maxvel,
+                                        double& _maxacc,
+                                        double& _startpos,
+                                        double& _endpos,
+                                        double& _t1,
+                                        double& _t2,
+                                        double& _duration,
+                                        double& _a1,
+                                        double& _a2,
+                                        double& _a3,
+                                        double& _b1,
+                                        double& _b2,
+                                        double& _b3,
+                                        double& _c1,
+                                        double& _c2,
+                                        double& _c3)
+{
+    _maxvel     = maxvel;
+    _maxacc     = maxacc;
+    _startpos   = startpos;
+    _endpos     = endpos;
+    _t1         = t1;
+    _t2         = t2;
+    _duration   = duration;
+    _a1         = a1;
+    _a2         = a2;
+    _a3         = a3;
+    _b1         = b1;
+    _b2         = b2;
+    _b3         = b3;
+    _c1         = c1;
+    _c2         = c2;
+    _c3         = c3;
+}
+
 
 
 

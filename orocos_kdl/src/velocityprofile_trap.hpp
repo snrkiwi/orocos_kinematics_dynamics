@@ -104,6 +104,23 @@ class VelocityProfile_Trap : public VelocityProfile
 		virtual VelocityProfile* Clone() const;
 		// returns copy of current VelocityProfile object. (virtual constructor)
 		virtual ~VelocityProfile_Trap();
+
+        void GetInternals(double& _maxvel,
+                          double& _maxacc,
+                          double& _startpos,
+                          double& _endpos,
+                          double& _t1,
+                          double& _t2,
+                          double& _duration,
+                          double& _a1,
+                          double& _a2,
+                          double& _a3,
+                          double& _b1,
+                          double& _b2,
+                          double& _b3,
+                          double& _c1,
+                          double& _c2,
+                          double& _c3);
 	};
 
 
