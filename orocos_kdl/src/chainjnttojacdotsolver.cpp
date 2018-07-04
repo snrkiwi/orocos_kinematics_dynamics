@@ -68,7 +68,7 @@ int ChainJntToJacDotSolver::JntToJacDot(const JntArrayVel& q_in, Jacobian& jdot,
     //Initialize Jacobian to zero since only segmentNr columns are computed
     SetToZero(jdot) ;
 
-    if(q_in.q.rows()!=chain.getNrOfJoints() || nr_of_unlocked_joints_!=jdot.columns())
+    if(q_in.q.rows()!=chain.getNrOfJoints()||nr_of_unlocked_joints_!=jdot.columns())
         return (error = E_SIZE_MISMATCH);
     else if(segmentNr>chain.getNrOfSegments())
         return (error = E_OUT_OF_RANGE);
@@ -78,19 +78,23 @@ int ChainJntToJacDotSolver::JntToJacDot(const JntArrayVel& q_in, Jacobian& jdot,
         return (error = E_JACSOLVER_FAILED);
 
     // Change the reference frame and/or the reference point
-    if (representation_ != HYBRID) // If HYBRID do nothing is this is the default.
+    switch(representation_)
     {
-        if (fk_solver_.JntToCart(q_in.q,F_bs_ee_,segmentNr) != E_NOERROR)
-            return (error = E_FKSOLVERPOS_FAILED);
-        if (representation_ == BODYFIXED) {
+        case HYBRID:
+            // Do Nothing as it is the default in KDL;
+            break;
+        case BODYFIXED:
             // Ref Frame {ee}, Ref Point {ee}
             jac_.changeBase(F_bs_ee_.M.Inverse());
-        } else if (representation_ == INTERTIAL) {
+            break;
+        case INTERTIAL:
             // Ref Frame {bs}, Ref Point {bs}
+            if (fk_solver_.JntToCart(q_in.q,F_bs_ee_,segmentNr) != E_NOERROR)
+                return (error = E_FKSOLVERPOS_FAILED);
             jac_.changeRefPoint(-F_bs_ee_.p);
-        } else {
+            break;
+        default:
             return (error = E_JAC_DOT_FAILED);
-        }
     }
 
     // Let's compute Jdot in the corresponding representation
@@ -216,10 +220,10 @@ void ChainJntToJacDotSolver::setRepresentation(const int& representation)
 }
 
 
-int ChainJntToJacDotSolver::setLockedJoints(const std::vector<bool>& locked_joints)
+int ChainJntToJacDotSolver::setLockedJoints(const std::vector< bool >& locked_joints)
 {
     if(locked_joints.size()!=locked_joints_.size())
-        return E_SIZE_MISMATCH;
+        return (error = E_SIZE_MISMATCH);
     locked_joints_=locked_joints;
     nr_of_unlocked_joints_=0;
     for(unsigned int i=0;i<locked_joints_.size();i++){

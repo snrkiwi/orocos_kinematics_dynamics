@@ -80,7 +80,7 @@ public:
      * @return int 0 if no errors happened
      */
     virtual int JntToJacDot(const KDL::JntArrayVel& q_in, KDL::Jacobian& jdot, int seg_nr = -1);
-    int setLockedJoints(const std::vector<bool>& locked_joints);
+    int setLockedJoints(const std::vector<bool> locked_joints);
     
     /**
      * @brief JntToJacDot() will compute in the Hybrid representation (ref Frame: base, ref Point: end-effector)
